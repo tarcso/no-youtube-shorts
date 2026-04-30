@@ -1,0 +1,16 @@
+html:not(.nys-allow-shorts) ytd-rich-item-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-video-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-grid-video-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-compact-video-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-reel-item-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) yt-lockup-view-model:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-rich-section-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-reel-shelf-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-horizontal-card-list-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+html:not(.nys-allow-shorts) ytd-shelf-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+ytd-guide-entry-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+ytd-mini-guide-entry-renderer:has(a[href^="/shorts"], a[href*="youtube.com/shorts"]),
+a[title="Shorts"][href^="/shorts"],
+a[title="Shorts"][href*="youtube.com/shorts"] {
+  display: none !important;
+}

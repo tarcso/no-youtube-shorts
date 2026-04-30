@@ -43,4 +43,5 @@ After changing the code:
 ## Files
 
 - `manifest.json` configures the extension.
-- `content.js` runs on YouTube and removes Shorts elements from the page.
+- `content.css` hides Shorts elements from the page.
+- `content.js` tracks YouTube route changes and redirects direct Shorts pages.
