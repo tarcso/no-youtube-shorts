@@ -1,4 +1,6 @@
 const SHORTS_PATH = "/shorts/";
+const HIDDEN_CLASS = "nys-hidden";
+const STYLE_ID = "nys-style";
 const SHORTS_LINK_SELECTOR = 'a[href^="/shorts"], a[href*="youtube.com/shorts"]';
 const SHORTS_CONTAINER_SELECTOR = [
   "ytd-rich-section-renderer",
@@ -16,7 +18,6 @@ const SHORTS_CONTAINER_SELECTOR = [
 ].join(",");
 
 let cleanupTimer = null;
-let navigationCleanupTimers = [];
 let lastScrollCleanup = 0;
 
 function isShortsPath(pathname) {
@@ -33,48 +34,49 @@ function redirectAwayFromShortsPage() {
   }
 }
 
-function removeShorts() {
+function installStyles() {
+  if (document.getElementById(STYLE_ID)) return;
+
+  const style = document.createElement("style");
+  style.id = STYLE_ID;
+  style.textContent = `.${HIDDEN_CLASS} { display: none !important; }`;
+  document.documentElement.append(style);
+}
+
+function hideShorts() {
   redirectAwayFromShortsPage();
 
   if (isSearchPage()) return;
 
   document.querySelectorAll(SHORTS_LINK_SELECTOR).forEach(link => {
     const container = link.closest(SHORTS_CONTAINER_SELECTOR);
-    (container || link).remove();
+    (container || link).classList.add(HIDDEN_CLASS);
   });
 }
 
-function scheduleCleanup(delay = 250) {
+function scheduleCleanup(delay = 500) {
   window.clearTimeout(cleanupTimer);
-  cleanupTimer = window.setTimeout(removeShorts, delay);
-}
-
-function clearNavigationCleanups() {
-  navigationCleanupTimers.forEach(timer => window.clearTimeout(timer));
-  navigationCleanupTimers = [];
-}
-
-function scheduleNavigationCleanup(delay) {
-  navigationCleanupTimers.push(window.setTimeout(removeShorts, delay));
+  cleanupTimer = window.setTimeout(() => {
+    const scheduleIdleWork = window.requestIdleCallback || (callback => window.setTimeout(callback, 0));
+    scheduleIdleWork(hideShorts, { timeout: 1500 });
+  }, delay);
 }
 
 function scheduleNavigationCleanups() {
-  clearNavigationCleanups();
   redirectAwayFromShortsPage();
-  scheduleCleanup(250);
-  scheduleNavigationCleanup(1200);
-  scheduleNavigationCleanup(3000);
+  scheduleCleanup(700);
 }
 
 function handleScroll() {
   const now = Date.now();
 
-  if (now - lastScrollCleanup < 1500) return;
+  if (now - lastScrollCleanup < 2500) return;
   lastScrollCleanup = now;
 
-  scheduleCleanup(500);
+  scheduleCleanup(900);
 }
 
+installStyles();
 scheduleNavigationCleanups();
 
 window.addEventListener("yt-navigate-start", redirectAwayFromShortsPage);
