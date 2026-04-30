@@ -6,8 +6,9 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
+      "css": ["content.css"],
       "js": ["content.js"],
-      "run_at": "document_idle"
+      "run_at": "document_start"
     }
   ]
 }

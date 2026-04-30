@@ -1,0 +1,11 @@
+html:not(.nys-allow-shorts) ytd-reel-shelf-renderer,
+html:not(.nys-allow-shorts) ytd-rich-shelf-renderer[is-shorts],
+html:not(.nys-allow-shorts) ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+html:not(.nys-allow-shorts) ytd-guide-entry-renderer a[title="Shorts"],
+html:not(.nys-allow-shorts) ytd-mini-guide-entry-renderer a[title="Shorts"],
+html:not(.nys-allow-shorts) a[title="Shorts"][href^="/shorts"],
+html:not(.nys-allow-shorts) a[title="Shorts"][href*="youtube.com/shorts"],
+html:not(.nys-allow-shorts) a[href^="/shorts"],
+html:not(.nys-allow-shorts) a[href*="youtube.com/shorts"] {
+  display: none !important;
+}

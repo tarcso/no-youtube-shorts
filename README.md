@@ -43,4 +43,5 @@ After changing the code:
 ## Files
 
 - `manifest.json` configures the extension.
-- `content.js` removes Shorts elements, tracks YouTube route changes, and redirects direct Shorts pages.
+- `content.css` hides Shorts links and shelves with cheap selectors.
+- `content.js` tracks YouTube route changes and redirects direct Shorts pages.
