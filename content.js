@@ -1,5 +1,23 @@
 const SHORTS_PATH = "/shorts/";
-const ALLOW_SHORTS_CLASS = "nys-allow-shorts";
+const SHORTS_LINK_SELECTOR = 'a[href^="/shorts"], a[href*="youtube.com/shorts"]';
+const SHORTS_CONTAINER_SELECTOR = [
+  "ytd-rich-section-renderer",
+  "ytd-reel-shelf-renderer",
+  "ytd-horizontal-card-list-renderer",
+  "ytd-shelf-renderer",
+  "ytd-rich-item-renderer",
+  "ytd-video-renderer",
+  "ytd-grid-video-renderer",
+  "ytd-compact-video-renderer",
+  "ytd-reel-item-renderer",
+  "yt-lockup-view-model",
+  "ytd-guide-entry-renderer",
+  "ytd-mini-guide-entry-renderer"
+].join(",");
+
+let cleanupTimer = null;
+let navigationCleanupTimers = [];
+let lastScrollCleanup = 0;
 
 function isShortsPath(pathname) {
   return pathname === "/shorts" || pathname.startsWith(SHORTS_PATH);
@@ -15,16 +33,52 @@ function redirectAwayFromShortsPage() {
   }
 }
 
-function updateRouteState() {
-  if (!document.documentElement) return;
-
-  document.documentElement.classList.toggle(ALLOW_SHORTS_CLASS, isSearchPage());
+function removeShorts() {
   redirectAwayFromShortsPage();
+
+  if (isSearchPage()) return;
+
+  document.querySelectorAll(SHORTS_LINK_SELECTOR).forEach(link => {
+    const container = link.closest(SHORTS_CONTAINER_SELECTOR);
+    (container || link).remove();
+  });
 }
 
-updateRouteState();
+function scheduleCleanup(delay = 250) {
+  window.clearTimeout(cleanupTimer);
+  cleanupTimer = window.setTimeout(removeShorts, delay);
+}
 
-window.addEventListener("yt-navigate-start", updateRouteState);
-window.addEventListener("yt-navigate-finish", updateRouteState);
-window.addEventListener("yt-page-data-updated", updateRouteState);
-window.addEventListener("popstate", updateRouteState);
+function clearNavigationCleanups() {
+  navigationCleanupTimers.forEach(timer => window.clearTimeout(timer));
+  navigationCleanupTimers = [];
+}
+
+function scheduleNavigationCleanup(delay) {
+  navigationCleanupTimers.push(window.setTimeout(removeShorts, delay));
+}
+
+function scheduleNavigationCleanups() {
+  clearNavigationCleanups();
+  redirectAwayFromShortsPage();
+  scheduleCleanup(250);
+  scheduleNavigationCleanup(1200);
+  scheduleNavigationCleanup(3000);
+}
+
+function handleScroll() {
+  const now = Date.now();
+
+  if (now - lastScrollCleanup < 1500) return;
+  lastScrollCleanup = now;
+
+  scheduleCleanup(500);
+}
+
+scheduleNavigationCleanups();
+
+window.addEventListener("yt-navigate-start", redirectAwayFromShortsPage);
+window.addEventListener("yt-navigate-finish", scheduleNavigationCleanups);
+window.addEventListener("yt-page-data-updated", scheduleNavigationCleanups);
+window.addEventListener("popstate", scheduleNavigationCleanups);
+window.addEventListener("scroll", handleScroll, { passive: true });
