@@ -1,0 +1,13 @@
+{
+  "name": "No YouTube Shorts",
+  "description": "Removes YouTube Shorts from recommendations and blocks Shorts pages.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
